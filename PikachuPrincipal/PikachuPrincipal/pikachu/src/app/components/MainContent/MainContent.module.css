@@ -1,0 +1,23 @@
+.main {
+  display: 'flex';
+  justify-content: 'space-around';
+  align-items: 'center';
+  padding: '20px';
+  background-color: '#f0f0f0';
+  width: '100%';
+  height: '100vh';
+}
+
+.um {
+  width: '45%';
+  height: '80%';
+  background-color: '#ccc';
+  border-radius: '10px';
+}
+
+.dois {
+  width: '45%';
+  height: '80%';
+  background-color: '#ccc';
+  border-radius: '10px';
+}
