@@ -129,7 +129,7 @@ const Sidebar = () => {
 }
 ```
 ## Page 
-A page é a parte do projeto que terá a maior quantidade de código, pois é nela que o site é montado, utilizando e organizando os components. Esta foi a parte que mais deu trabalho até agora, já que foi onde desenvolvemos as principais funcionalidades do projeto, como, por exemplo, a responsividade e personalização do site com CSS, além da montagem e manipulação dos components com JavaScript. Os códigos utilizados foram os seguintes:
+A Page é a parte do projeto que contém a maior quantidade de código, pois é nela que o site é estruturado, utilizando e organizando os components. Esta foi a parte que mais demandou trabalho até agora, já que foi onde desenvolvemos as principais funcionalidades do projeto, como, por exemplo, a responsividade e a personalização do site com CSS, além da montagem e manipulação dos components com JavaScript. Os códigos utilizados foram os seguintes:
 ### JavasCript 
 ```css
 'use client'; // Adicione esta diretiva no topo do arquivo
@@ -271,7 +271,7 @@ export default function Home() {
 
 # Etapa Final
 ## Alterações Na Sidebar
-A Sidebar agora não tem mais botões de console, registar e entrar contendo somente a logo do site, e agora o seus codigos estão assim.
+A Sidebar agora não possui mais os botões de "Console", "Registrar" e "Entrar", contendo apenas a logo do site. Os seus códigos estão agora organizados da seguinte forma.
 JavaScript
 ```css
 import styles from './Sidebar.module.css';
@@ -333,7 +333,7 @@ Css
 ```
 
 ## Principais Alterações
-As princiáis alterações são devidas a adição da API que agora é o conteudo principal localizada na pasta pokemon que trabalha diretamente com um novo componente que é o pokemonDetails assim mostrando aleatoriamente varios tipos diferentes de pokemons e suas principais caracteristicas e seus codigos estão assim.
+As principais alterações são devidas à adição da API, que agora é o conteúdo principal. Ela está localizada na pasta "pokemon" e trabalha diretamente com um novo componente, o PokemonDetails, que exibe aleatoriamente vários tipos diferentes de pokémons, suas principais características e seus respectivos códigos, que estão organizados da seguinte forma.
 #### JavaScript:pokemon/pages
 ```css
 'use client';
