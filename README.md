@@ -496,6 +496,228 @@ export default PokemonDetails;
   padding: 2rem;
 }
 ```
+#### pages.js
+```css
+'use client';
+import styles from "./page.module.css";
+import React, { useState, useEffect } from 'react';
+import Sidebar from './components/Sidebar/Sidebar';
+import MainContent from './components/MainContent/MainContent';
+import { useRouter } from 'next/navigation';
+
+export default function Home() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [pokemons, setPokemons] = useState([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkIfMobile();
+    window.addEventListener('resize', checkIfMobile);
+    
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
+
+  useEffect(() => {
+    const fetchPokemons = async () => {
+      try {
+        let url = "https://pokeapi.co/api/v2/pokemon/"
+        for(let i = 0; i < 2; i++){
+          const randomIndex = Math.floor(Math.random()*1000)
+          const response = await fetch(url + randomIndex);
+          const data = await response.json();
+          setPokemons(currentPokemons => [...currentPokemons, data])
+        }
+      } catch (error) {
+        console.error("Error fetching pokemons:", error);
+      }
+    };
+
+    fetchPokemons();
+  }, []);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  const handlePokemonSelect = (pokemon) => {
+    router.push(`/pokemons/${encodeURIComponent(pokemon.name)}`);
+  };
+
+  return (
+    <div className={styles.page}>
+      <main className={styles.main}>
+        <MainContent 
+          pokemons={pokemons}
+          onPokemonSelect={handlePokemonSelect} 
+        />
+      </main>
+      
+      {isMobile && (
+        <button 
+          className={styles.mobileMenuButton}
+          onClick={toggleSidebar}
+          aria-label="Toggle menu"
+        >
+          {sidebarOpen ? '✕' : '☰'}
+        </button>
+      )}
+      
+      <aside 
+        className={`${styles.sidebarContainer} ${sidebarOpen ? styles.sidebarOpen : ''}`}
+        aria-hidden={isMobile && !sidebarOpen}
+      >
+        <Sidebar />
+        {isMobile && (
+          <button 
+            onClick={toggleSidebar}
+            style={{
+              margin: '1rem',
+              padding: '0.75rem',
+              background: '#aaa',
+              border: 'none',
+              borderRadius: '0.5rem',
+              cursor: 'pointer'
+            }}
+          >
+            Fechar Menu
+          </button>
+        )}
+      </aside>
+    </div>
+  );
+}
+```
+#### page.module.css
+```css
+.page {
+  --gray-rgb: 0, 0, 0;
+  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
+  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
+  --button-primary-hover: #383838;
+  --button-secondary-hover: #f2f2f2;
+
+  display: grid;
+  grid-template-columns: 1fr 250px;
+  min-height: 100svh;
+  font-family: var(--font-geist-sans);
+}
+
+.main {
+  grid-column: 1;
+  padding: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.sidebarContainer {
+  grid-column: 2;
+  background-color: #f0f0f0;
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow-y: auto;
+}
+
+.mobileMenuButton {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  background: #aaa;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1.25rem;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .page {
+    grid-template-columns: 1fr 220px;
+  }
+  
+  .main {
+    padding: 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+  
+  .main {
+    padding: 32px;
+    padding-bottom: 80px;
+    align-items: center;
+  }
+  
+  .sidebarContainer {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 85%;
+    max-width: 300px;
+    height: 100svh;
+    transition: right 0.3s ease-in-out;
+    z-index: 999;
+  }
+  
+  .sidebarOpen {
+    right: 0;
+  }
+  
+  .mobileMenuButton {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 20px;
+  }
+  
+  .sidebarContainer {
+    width: 90%;
+  }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .page {
+    --gray-rgb: 255, 255, 255;
+    --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
+    --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
+    --button-primary-hover: #ccc;
+    --button-secondary-hover: #1a1a1a;
+  }
+  
+  .sidebarContainer {
+    background-color: #1a1a1a;
+  }
+  
+  .logo {
+    filter: invert();
+  }
+}
+```
+E a página principal está desta forma. 
+![image](https://github.com/user-attachments/assets/0d956751-8058-429b-b2e6-fecf017ea564)
+
+E, quando um Pokémon é selecionado, suas principais características são mostradas desta forma.
+
+![image](https://github.com/user-attachments/assets/e4394465-d14d-4d5c-bdda-3bfc102b627d) ![image](https://github.com/user-attachments/assets/137c1472-e07e-450a-98dc-825dad7378f7) ![image](https://github.com/user-attachments/assets/50cbd714-e067-4b72-bbd0-ba6ed765541b)
+
+
+
 
 
 
