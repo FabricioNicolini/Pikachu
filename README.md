@@ -268,3 +268,234 @@ export default function Home() {
   );
 }
 ```
+
+# Etapa Final
+## Alterações Na Sidebar
+A Sidebar agora não tem mais botões de console, registar e entrar contendo somente a logo do site, e agora o seus codigos estão assim.
+JavaScript
+```css
+import styles from './Sidebar.module.css';
+import Image from 'next/image';
+
+const Sidebar = () => {
+    return (
+      <aside className={styles.sidebar}>
+        <section>
+          <article className={styles.logo}>
+            <Image 
+            src="/pokemanos.png" 
+            alt="Pokemanos Logo"
+            width={200}
+            height={100}
+            priority
+          />
+
+          </article>
+        </section>
+      </aside>
+    );
+};
+  
+export default Sidebar;
+```
+Css
+```css
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: 1.5rem;
+}
+
+.logo {
+  background-color: #ccc;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .sidebar {
+    padding: 1rem;
+  }
+  
+  .logo {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+  }
+}
+```
+
+## Principais Alterações
+As princiáis alterações são devidas a adição da API que agora é o conteudo principal localizada na pasta pokemon que trabalha diretamente com um novo componente que é o pokemonDetails assim mostrando aleatoriamente varios tipos diferentes de pokemons e suas principais caracteristicas e seus codigos estão assim.
+#### JavaScript:pokemon/pages
+```css
+'use client';
+import React, { useState, useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import PokemonDetails from '@/app/components/pokemonDetails/pokemonDetails';
+
+export default function Home() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [pokemon, setPokemon] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const router = useRouter();
+  const pathname = usePathname()
+
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkIfMobile();
+    window.addEventListener('resize', checkIfMobile);
+
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
+
+  useEffect(() => {
+    const fetchPokemons = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const selectedPokemon = pathname.split("/")[2]
+
+        const url = "https://pokeapi.co/api/v2/pokemon/"
+        const response = await fetch(url + selectedPokemon);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setPokemon(data);
+      } catch (error) {
+        console.error("Error fetching pokemons:", error);
+        setError(error.message || 'Failed to fetch pokemons');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPokemons();
+  }, []);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  const handlePokemonSelect = (pokemon) => {
+    router.push(`/pokemons/${encodeURIComponent(pokemon.name)}`);
+  };
+
+  return (
+    <div>
+      <main>
+        {loading ? (
+          <div>Loading pokemons...</div>
+        ) : error ? (
+          <div>
+            <p>Error: {error}</p>
+            <button onClick={() => window.location.reload()}>Try Again</button>
+          </div>
+        ) : (
+          pokemon && 
+          <PokemonDetails
+            pokemon={pokemon}
+          />
+        )}
+      </main>
+    </div>
+  );
+}
+```
+#### gobals.css
+```css
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+```
+#### JavaScript:PokemonDetails
+```css
+'use client';
+import styles from './PokemonDetails.module.css';
+import React from 'react';
+
+const PokemonDetails = ({ pokemon }) => {
+  return (
+    <div className={styles.main}>
+      <h1>{pokemon.name}</h1>
+      <div>
+        <div
+          key={pokemon.name}
+        >
+          <img src={pokemon.sprites.front_default} />
+          <h2>{pokemon.name}</h2>
+          <h3>Tipos</h3>
+          {pokemon.types.map(typeObj => (
+            <p>{typeObj.type.name}</p>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PokemonDetails;
+```
+#### PokemonDetails.module.css
+```css
+.main {
+  padding: 2rem;
+}
+```
+
+
+
