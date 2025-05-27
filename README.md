@@ -710,6 +710,7 @@ export default function Home() {
 }
 ```
 E a página principal está desta forma. 
+
 ![image](https://github.com/user-attachments/assets/0d956751-8058-429b-b2e6-fecf017ea564)
 
 E, quando um Pokémon é selecionado, suas principais características são mostradas desta forma.
